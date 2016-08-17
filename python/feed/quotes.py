@@ -20,27 +20,13 @@ class QuotesChannel(Channel):
         Channel.__init__(self, "QuotesChannel", endpoint)
         self.interval = interval
         self.on_quotes = on_quotes
-        self._start_timer()
         self.connect()
-
-    def _start_timer(self):
-        self.timer = threading.Timer(self.interval, self.on_timer)
-        self.timer.start()
 
     def on_message(self, message):
         if "message" in message and type(message["message"]) is dict:
-            if message["message"]["type"] == 'quote':
+            if "type" in message["message"] and message["message"]["type"] == 'quote':
                 if self.on_quotes:
                     self.on_quotes(message["message"]["quotes"])
-
-    def on_timer(self):
-        self.get_quotes()
-        self._start_timer()
-
-    def get_quotes(self):
-        self.logger.debug("get_quotes")
-        self.perform("request_for_quote", { "symbol":"*" })
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
