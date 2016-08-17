@@ -1,2 +1,3 @@
 *.pyc
 .ipy*
+run_harness.sh
